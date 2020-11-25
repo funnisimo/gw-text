@@ -1,10 +1,12 @@
 
-import { sum } from './index';
+import * as GWText from './index';
 
-test('basic', () => {
-  expect(sum()).toBe(0);
-});
+describe('GWText', () => {
 
-test('basic again', () => {
-  expect(sum(1, 2)).toBe(3);
+  test('configure', () => {
+    expect(GWText.options).toBeDefined();
+    expect(GWText.configure).toBeDefined();
+    expect(GWText.compile).toBeDefined();
+    expect(GWText.eachChar).toBeDefined();
+  });
 });

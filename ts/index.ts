@@ -1,10 +1,9 @@
 
-import * as Config from './config';
+export * from './compile';
+export * from './each';
+export * from './config';
 
-export const sum
-    = (...a: number[]) =>
-      a.reduce((acc, val) => acc + val, 0);
-      
+import * as Config from './config';
 
 interface Options {
   helpers?: Record<string,Function>;

@@ -5,8 +5,7 @@ describe('Config', () => {
 
   it('will add helpers', () => {
     expect(Config.helpers).toBeDefined();
-    expect(Config.helpers.colorStart).toBeDefined();
-    expect(Config.helpers.colorEnd).toBeDefined();
+    expect(Config.helpers.eachColor).toBeDefined();
     
     const fn = jest.fn();
     Config.addHelper('test', fn);

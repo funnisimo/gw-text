@@ -155,39 +155,3 @@ export function makeVariable(pattern: string) {
   return result;
 }
 
-// function execute(pattern: string, args: Args={}) {
-//   let output = pattern;
-// 
-//   const F = Config.options.field;
-//   let i = output.indexOf(F);
-//   while( i > -1 ) {
-//     let j = output.indexOf(F, i + 1);
-//     if (j < 0) {
-//       console.warn('Failed to find field end mark');
-//       console.warn(' - pattern:', pattern);
-//       console.warn(' - index of start:', i);
-//       return pattern;
-//     }
-// 
-//     let field = output.substring(i + 1, j);
-//     let value = `!!${field}!!`;
-// 
-// 
-//     // field access
-//     if (field.indexOf('.') > 0) {
-//       const [arg, sub] = field.split('.');
-//       const obj = args[arg];
-//       if (obj) {
-//         value = obj[sub] || value;
-//       }
-//     }
-//     else {
-//       value = args[field] || value;
-//     }
-// 
-//     output = output.substring(0, i) + value + output.substring(j + 1);
-//     i = output.indexOf(F, i);
-//   }
-// 
-//   return output;
-// }

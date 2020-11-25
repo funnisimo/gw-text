@@ -14,8 +14,7 @@ type EachFn = (ch:string, i: number, fg:any, bg:any ) => void;
 export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
   const colors: ColorInfo[] = [];
   
-  const colorStartFn = Config.helpers.colorStart as ColorFunction;
-  const colorEndFn  = Config.helpers.colorEnd as ColorFunction;
+  const colorFn = Config.helpers.eachColor as ColorFunction;
 
   const ctx = {
     fg: (fg === undefined) ? Config.options.defaultFg : fg,
@@ -25,7 +24,7 @@ export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
   const CS = Config.options.colorStart;
   const CE = Config.options.colorEnd;
 
-  colorStartFn({ fg, bg });
+  colorFn({ fg, bg });
   
   let n = 0;
   for(let i = 0; i < text.length; ++i) {
@@ -44,14 +43,14 @@ export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
       colors.push([ctx.fg, ctx.bg]);
       const color = text.substring(i+1, j);
       ([ctx.fg, ctx.bg] = color.split('|'));
-      colorStartFn(ctx); 
+      colorFn(ctx); 
       i = j;
       continue;
     }
     else if (ch == CE) {
       const c = colors.pop(); // if you pop too many times colors can get weird
       [ctx.fg, ctx.bg] = c || [null,null];
-      colorEndFn(ctx);
+      colorFn(ctx);
       continue;
     }
     fn(ch, n, ctx.fg, ctx.bg);

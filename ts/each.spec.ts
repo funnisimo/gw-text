@@ -41,13 +41,11 @@ describe('each', () => {
     });
     
     test('transform color', () => {
-      const colorStart = jest.fn().mockImplementation( (ctx) => { 
+      const eachColor = jest.fn().mockImplementation( (ctx) => { 
         ctx.fg = (ctx.fg ? 333 : 0); 
       });
-      const colorEnd = jest.fn().mockImplementation( (ctx) => { ctx.fg = 0; } );
       
-      Config.addHelper('colorStart', colorStart);
-      Config.addHelper('colorEnd', colorEnd);
+      Config.addHelper('eachColor', eachColor);
       
       Each.eachChar('a ΩredΩtest∆ text', eachFn);
       expect(eachFn).toHaveBeenCalledTimes(11);
