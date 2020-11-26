@@ -2,6 +2,7 @@
 export * from './compile';
 export * from './each';
 export * from './config';
+export * from './utils';
 
 import * as Config from './config';
 
