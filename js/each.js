@@ -1,0 +1,42 @@
+import * as Config from './config';
+export function eachChar(text, fn, fg, bg) {
+    const colors = [];
+    const colorFn = Config.helpers.eachColor;
+    const ctx = {
+        fg: (fg === undefined) ? Config.options.defaultFg : fg,
+        bg: (bg === undefined) ? Config.options.defaultBg : bg,
+    };
+    const CS = Config.options.colorStart;
+    const CE = Config.options.colorEnd;
+    colorFn({ fg, bg });
+    let n = 0;
+    for (let i = 0; i < text.length; ++i) {
+        const ch = text[i];
+        if (ch == CS) {
+            let j = i + 1;
+            while (j < text.length && text[j] != CS) {
+                ++j;
+            }
+            if (j == text.length) {
+                console.warn('Reached end of string while seeking end of color start section.');
+                console.warn('- text:', text);
+                console.warn('- start @:', i);
+                return; // reached end - done (error though)
+            }
+            colors.push([ctx.fg, ctx.bg]);
+            const color = text.substring(i + 1, j);
+            ([ctx.fg, ctx.bg] = color.split('|'));
+            colorFn(ctx);
+            i = j;
+            continue;
+        }
+        else if (ch == CE) {
+            const c = colors.pop(); // if you pop too many times colors can get weird
+            [ctx.fg, ctx.bg] = c || [null, null];
+            colorFn(ctx);
+            continue;
+        }
+        fn(ch, n, ctx.fg, ctx.bg);
+        ++n;
+    }
+}

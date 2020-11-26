@@ -10,6 +10,8 @@ If you want to store message configuration that will later be filled in when the
 const template = GWText.compile('The ΩredΩ§actor§∆ ate the ΩgreenΩ§food§∆.');
 const message  = template({ actor: 'Fox', food: 'Chicken' });
 
+// message = 'The ΩredΩFox∆ ate the ΩgreenΩChicken∆.'
+
 GWText.eachChar(message, (ch, i, fg, bg) => {
   drawChar(x + i, y, ch, fg, bg);
 });

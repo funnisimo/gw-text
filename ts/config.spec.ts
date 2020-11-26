@@ -4,7 +4,7 @@ import * as Config from './config';
 describe('Config', () => {
 
   it('will add helpers', () => {
-    expect(Config.helpers).toBeDefined();
+    expect(Config.helpers).toBeObject();
     expect(Config.helpers.eachColor).toBeDefined();
     
     const fn = jest.fn();
