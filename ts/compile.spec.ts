@@ -9,6 +9,11 @@ describe('compile', () => {
     const template = Compile.compile('test');
     expect(template({})).toEqual('test');
   });
+  
+  test('placing a marker', () => {
+    const template = Compile.compile('test §§!');
+    expect(template({})).toEqual('test §!');
+  })
 
   test('simple replacement', () => {
     const template = Compile.compile('My name is §name§.');

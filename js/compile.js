@@ -5,6 +5,8 @@ export function compile(template) {
     const sections = parts.map((part, i) => {
         if (i % 2 == 0)
             return textSegment(part);
+        if (part.length == 0)
+            return makeVariable(F);
         return makeVariable(part);
     });
     return function (args) {

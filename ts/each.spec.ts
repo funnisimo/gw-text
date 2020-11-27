@@ -52,6 +52,12 @@ describe('each', () => {
       expect(output).toEqual('a #333#t#333#e#333#s#333#t text');
     });
     
+    test('placing color marker char', () => {
+      Each.eachChar('a ΩΩ horseshoe ∆∆!', eachFn);
+      expect(eachFn).toHaveBeenCalledTimes(16);
+      expect(output).toEqual('a Ω horseshoe ∆!');
+    });
+    
   });
   
 });

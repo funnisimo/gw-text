@@ -49,6 +49,8 @@
         const sections = parts.map((part, i) => {
             if (i % 2 == 0)
                 return textSegment(part);
+            if (part.length == 0)
+                return makeVariable(F);
             return makeVariable(part);
         });
         return function (args) {
@@ -217,6 +219,41 @@
         }
     }
 
+    function length(text) {
+        let len = 0;
+        const CS = options.colorStart;
+        const CE = options.colorEnd;
+        for (let i = 0; i < text.length; ++i) {
+            const ch = text[i];
+            if (ch == CS) {
+                const end = text.indexOf(CS, i + 1);
+                i = end;
+            }
+            else if (ch == CE) ;
+            else {
+                ++len;
+            }
+        }
+        return len;
+    }
+    function padStart(text, width, pad = ' ') {
+        const colorLen = text.length - length(text);
+        return text.padStart(width + colorLen, pad);
+    }
+    function padEnd(text, width, pad = ' ') {
+        const colorLen = text.length - length(text);
+        return text.padEnd(width + colorLen, pad);
+    }
+    function center(text, width, pad = ' ') {
+        const rawLen = text.length;
+        const len = length(text);
+        const padLen = width - len;
+        if (padLen <= 0)
+            return text;
+        const left = Math.floor(padLen / 2);
+        return text.padStart(rawLen + left, pad).padEnd(rawLen + padLen, pad);
+    }
+
     function configure(opts = {}) {
         if (opts.helpers) {
             Object.entries(opts.helpers).forEach(([name, fn]) => {
@@ -233,6 +270,7 @@
 
     exports.addHelper = addHelper;
     exports.baseValue = baseValue;
+    exports.center = center;
     exports.compile = compile;
     exports.configure = configure;
     exports.eachChar = eachChar;
@@ -241,8 +279,11 @@
     exports.helperValue = helperValue;
     exports.helpers = helpers;
     exports.intFormat = intFormat;
+    exports.length = length;
     exports.makeVariable = makeVariable;
     exports.options = options;
+    exports.padEnd = padEnd;
+    exports.padStart = padStart;
     exports.stringFormat = stringFormat;
     exports.textSegment = textSegment;
 

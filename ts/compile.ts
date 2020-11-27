@@ -11,6 +11,7 @@ export function compile(template: string): Template {
   const parts = template.split(F);
   const sections = parts.map( (part, i) => {
     if (i % 2 == 0) return textSegment(part);
+    if (part.length == 0) return textSegment(F);
     return makeVariable(part);
   });
   
