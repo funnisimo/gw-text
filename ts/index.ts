@@ -3,6 +3,7 @@ export * from './compile';
 export * from './each';
 export * from './config';
 export * from './utils';
+export { wordWrap } from './lines';
 
 import * as Config from './config';
 
