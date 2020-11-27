@@ -35,3 +35,61 @@ export function center(text, width, pad = ' ') {
     const left = Math.floor(padLen / 2);
     return text.padStart(rawLen + left, pad).padEnd(rawLen + padLen, pad);
 }
+export function capitalize(text) {
+    const CS = Config.options.colorStart;
+    const CE = Config.options.colorEnd;
+    let i = 0;
+    while (i < text.length) {
+        const ch = text[i];
+        if (ch == CS) {
+            ++i;
+            while (text[i] != CS && i < text.length) {
+                ++i;
+            }
+            ++i;
+        }
+        else if (ch == CE) {
+            ++i;
+            while (text[i] == CS && i < text.length) {
+                ++i;
+            }
+        }
+        else {
+            return text.substring(0, i) + ch.toUpperCase() + text.substring(i + 1);
+        }
+    }
+    return text;
+}
+export function removeColors(text) {
+    const CS = Config.options.colorStart;
+    const CE = Config.options.colorEnd;
+    let out = '';
+    let start = 0;
+    for (let i = 0; i < text.length; ++i) {
+        const k = text[i];
+        if (k === CS) {
+            if (text[i + 1] == CS) {
+                ++i;
+                continue;
+            }
+            out += text.substring(start, i);
+            ++i;
+            while (text[i] != CS && i < text.length) {
+                ++i;
+            }
+            start = i + 1;
+        }
+        else if (k === CE) {
+            if (text[i + 1] == CE) {
+                ++i;
+                continue;
+            }
+            out += text.substring(start, i);
+            start = i + 1;
+        }
+    }
+    if (start == 0)
+        return text;
+    out += text.substring(start);
+    return out;
+}

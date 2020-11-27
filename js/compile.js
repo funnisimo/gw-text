@@ -6,7 +6,7 @@ export function compile(template) {
         if (i % 2 == 0)
             return textSegment(part);
         if (part.length == 0)
-            return makeVariable(F);
+            return textSegment(F);
         return makeVariable(part);
     });
     return function (args) {

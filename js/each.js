@@ -23,18 +23,28 @@ export function eachChar(text, fn, fg, bg) {
                 console.warn('- start @:', i);
                 return; // reached end - done (error though)
             }
-            colors.push([ctx.fg, ctx.bg]);
-            const color = text.substring(i + 1, j);
-            ([ctx.fg, ctx.bg] = color.split('|'));
-            colorFn(ctx);
-            i = j;
-            continue;
+            if (j == i + 1) { // next char
+                ++i; // fall through
+            }
+            else {
+                colors.push([ctx.fg, ctx.bg]);
+                const color = text.substring(i + 1, j);
+                ([ctx.fg, ctx.bg] = color.split('|'));
+                colorFn(ctx);
+                i = j;
+                continue;
+            }
         }
         else if (ch == CE) {
-            const c = colors.pop(); // if you pop too many times colors can get weird
-            [ctx.fg, ctx.bg] = c || [null, null];
-            colorFn(ctx);
-            continue;
+            if (text[i + 1] == CE) {
+                ++i;
+            }
+            else {
+                const c = colors.pop(); // if you pop too many times colors can get weird
+                [ctx.fg, ctx.bg] = c || [null, null];
+                colorFn(ctx);
+                continue;
+            }
         }
         fn(ch, n, ctx.fg, ctx.bg);
         ++n;

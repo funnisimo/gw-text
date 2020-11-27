@@ -50,7 +50,7 @@
             if (i % 2 == 0)
                 return textSegment(part);
             if (part.length == 0)
-                return makeVariable(F);
+                return textSegment(F);
             return makeVariable(part);
         });
         return function (args) {
@@ -201,18 +201,28 @@
                     console.warn('- start @:', i);
                     return; // reached end - done (error though)
                 }
-                colors.push([ctx.fg, ctx.bg]);
-                const color = text.substring(i + 1, j);
-                ([ctx.fg, ctx.bg] = color.split('|'));
-                colorFn(ctx);
-                i = j;
-                continue;
+                if (j == i + 1) { // next char
+                    ++i; // fall through
+                }
+                else {
+                    colors.push([ctx.fg, ctx.bg]);
+                    const color = text.substring(i + 1, j);
+                    ([ctx.fg, ctx.bg] = color.split('|'));
+                    colorFn(ctx);
+                    i = j;
+                    continue;
+                }
             }
             else if (ch == CE) {
-                const c = colors.pop(); // if you pop too many times colors can get weird
-                [ctx.fg, ctx.bg] = c || [null, null];
-                colorFn(ctx);
-                continue;
+                if (text[i + 1] == CE) {
+                    ++i;
+                }
+                else {
+                    const c = colors.pop(); // if you pop too many times colors can get weird
+                    [ctx.fg, ctx.bg] = c || [null, null];
+                    colorFn(ctx);
+                    continue;
+                }
             }
             fn(ch, n, ctx.fg, ctx.bg);
             ++n;
@@ -253,6 +263,178 @@
         const left = Math.floor(padLen / 2);
         return text.padStart(rawLen + left, pad).padEnd(rawLen + padLen, pad);
     }
+    function capitalize(text) {
+        const CS = options.colorStart;
+        const CE = options.colorEnd;
+        let i = 0;
+        while (i < text.length) {
+            const ch = text[i];
+            if (ch == CS) {
+                ++i;
+                while (text[i] != CS && i < text.length) {
+                    ++i;
+                }
+                ++i;
+            }
+            else if (ch == CE) {
+                ++i;
+                while (text[i] == CS && i < text.length) {
+                    ++i;
+                }
+            }
+            else {
+                return text.substring(0, i) + ch.toUpperCase() + text.substring(i + 1);
+            }
+        }
+        return text;
+    }
+    function removeColors(text) {
+        const CS = options.colorStart;
+        const CE = options.colorEnd;
+        let out = '';
+        let start = 0;
+        for (let i = 0; i < text.length; ++i) {
+            const k = text[i];
+            if (k === CS) {
+                if (text[i + 1] == CS) {
+                    ++i;
+                    continue;
+                }
+                out += text.substring(start, i);
+                ++i;
+                while (text[i] != CS && i < text.length) {
+                    ++i;
+                }
+                start = i + 1;
+            }
+            else if (k === CE) {
+                if (text[i + 1] == CE) {
+                    ++i;
+                    continue;
+                }
+                out += text.substring(start, i);
+                start = i + 1;
+            }
+        }
+        if (start == 0)
+            return text;
+        out += text.substring(start);
+        return out;
+    }
+
+    function nextBreak(text, start) {
+        const CS = options.colorStart;
+        const CE = options.colorEnd;
+        let i = start;
+        let l = 0;
+        let count = true;
+        while (i < text.length) {
+            const ch = text[i];
+            if (ch == ' ') {
+                while (text[i + 1] == ' ')
+                    ++i;
+                return [i, l];
+            }
+            if (ch == '\n') {
+                return [i, l];
+            }
+            if (ch == CS) {
+                if (text[i + 1] == CS && count) {
+                    l += 1;
+                    i += 2;
+                    continue;
+                }
+                count = !count;
+                ++i;
+                continue;
+            }
+            else if (ch == CE) {
+                if (text[i + 1] == CE) {
+                    l += 1;
+                    ++i;
+                }
+                i++;
+                continue;
+            }
+            l += (count ? 1 : 0);
+            ++i;
+        }
+        return [i, l];
+    }
+    // export function wordWrap(text:string, width:number, indent:number=0) {
+    // 
+    //   if (text.length <= width) return text;
+    // 
+    //   let left = width;
+    //   const maxWidth = width - indent;
+    //   let start = 0;
+    //   let output = '';
+    // 
+    //   let i = 0;
+    //   while( i < text.length) {
+    //     const [j,l] = nextBreak(text, i);
+    //     // j = index of space
+    //     left -= (l + ((j<text.length) ? 1 : 0));
+    //     if (left > 0) {
+    //       i = j;
+    //     }
+    //     else if (left == 0 || left == -1) {
+    //       output += text.substring(start, j-1);
+    //       if (j < text.length) output += '\n';
+    //       start = i = j;
+    //       left = maxWidth;
+    //     }
+    //     else {  // over (i == space)
+    //       output += text.substring(start, i - 1) + '\n';
+    //       start = i;
+    //       left = maxWidth;
+    //     }
+    //   }
+    // 
+    //   if (start == 0) return text;
+    // 
+    //   if (start < text.length) {
+    //     output += text.substring(start);
+    //   }
+    //   return output;
+    // }
+    function splice(text, start, len, add = '') {
+        return text.substring(0, start) + add + text.substring(start + len);
+    }
+    // Returns the number of lines, including the newlines already in the text.
+    // Puts the output in "to" only if we receive a "to" -- can make it null and just get a line count.
+    function wordWrap(text, width, indent = 0) {
+        if (!width)
+            throw new Error('Need string and width');
+        let spaceLeftOnLine = width;
+        width = width - indent;
+        let printString = text;
+        let textLength = printString.length; // do NOT remove color length
+        // Now go through and replace spaces with newlines as needed.
+        // console.log('wordWrap - ', text, width, indent);
+        let i = -1;
+        while (i < textLength) {
+            // wordWidth counts the word width of the next word without color escapes.
+            // w indicates the position of the space or newline or null terminator that terminates the word.
+            let [w, wordWidth] = nextBreak(printString, i + 1);
+            // console.log('- w=%d, width=%d, space=%d', w, wordWidth, spaceLeftOnLine)
+            if (wordWidth == spaceLeftOnLine) {
+                const nl = (w < textLength) ? '\n' : '';
+                printString = splice(printString, w, 1, nl); // [i] = '\n';
+                spaceLeftOnLine = width;
+            }
+            else if (wordWidth > spaceLeftOnLine || printString[i] === '\n') {
+                printString = splice(printString, i, 1, '\n'); // [i] = '\n';
+                spaceLeftOnLine = width - wordWidth - 1; // line width minus the width of the word we just wrapped and the space
+                //printf("\n\n%s", printString);
+            }
+            else {
+                spaceLeftOnLine -= 1 + wordWidth;
+            }
+            i = w; // Advance to the terminator that follows the word.
+        }
+        return printString;
+    }
 
     function configure(opts = {}) {
         if (opts.helpers) {
@@ -270,6 +452,7 @@
 
     exports.addHelper = addHelper;
     exports.baseValue = baseValue;
+    exports.capitalize = capitalize;
     exports.center = center;
     exports.compile = compile;
     exports.configure = configure;
@@ -284,8 +467,10 @@
     exports.options = options;
     exports.padEnd = padEnd;
     exports.padStart = padStart;
+    exports.removeColors = removeColors;
     exports.stringFormat = stringFormat;
     exports.textSegment = textSegment;
+    exports.wordWrap = wordWrap;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 
