@@ -68,3 +68,40 @@ export function capitalize(text:string) {
   }
   return text;
 }
+
+
+
+export function removeColors(text:string) {
+  const CS = Config.options.colorStart;
+  const CE = Config.options.colorEnd;
+
+  let out = '';
+  let start = 0;
+  for(let i = 0; i < text.length; ++i) {
+    const k = text[i];
+    if (k === CS) {
+      if (text[i+1] == CS) { 
+        ++i;
+        continue;
+      }
+      out += text.substring(start, i);
+      ++i;
+      while(text[i] != CS && i < text.length) {
+        ++i;
+      }
+      start = i + 1;
+    }
+    else if (k === CE) {
+      if (text[i+1] == CE) {
+        ++i;
+        continue;
+      }
+      out += text.substring(start, i);
+      start = i + 1;
+    }
+  }
+  if (start == 0) return text;
+  out += text.substring(start);
+  return out;
+}
+

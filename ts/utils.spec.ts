@@ -56,3 +56,9 @@ test('capitalize', () => {
   expect(Utils.capitalize('test')).toEqual('Test');
   expect(Utils.capitalize('ΩredΩtest∆')).toEqual('ΩredΩTest∆');
 });
+
+test('removeColors', () => {
+  expect(Utils.removeColors('test')).toEqual('test');
+  expect(Utils.removeColors('ΩredΩtest∆')).toEqual('test');
+  expect(Utils.removeColors('a ΩΩ horseshoe ∆∆!')).toEqual('a ΩΩ horseshoe ∆∆!');
+});
