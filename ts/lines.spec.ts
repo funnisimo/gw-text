@@ -70,5 +70,14 @@ describe('wordWrap', () => {
     expect(Lines.wordWrap('test ΩorangeΩtests∆test', 10)).toEqual('test\nΩorangeΩtests∆test');
   });
   
+  test('hyphenate', () => {
+    // hyphenate long words near middle if possible
+    expect(Lines.wordWrap('reallyreally', 10)).toEqual('really-\nreally');
+    expect(Lines.wordWrap('test reallyreally', 10)).toEqual('test real-\nlyreally');
+    expect(Lines.wordWrap('testing reallyreally', 10)).toEqual('testing\nreally-\nreally');
+    expect(() => Lines.wordWrap('reallyreallylongwordsthrow', 10)).toThrow();
+
+  });
+  
 });
 
