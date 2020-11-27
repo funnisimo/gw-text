@@ -51,3 +51,8 @@ describe('center', () => {
   });
   
 });
+
+test('capitalize', () => {
+  expect(Utils.capitalize('test')).toEqual('Test');
+  expect(Utils.capitalize('ΩredΩtest∆')).toEqual('ΩredΩTest∆');
+});

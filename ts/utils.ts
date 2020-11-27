@@ -42,3 +42,29 @@ export function center(text:string, width:number, pad:string=' ') {
   
   return text.padStart(rawLen+left, pad).padEnd(rawLen+padLen, pad);
 }
+
+export function capitalize(text:string) {
+  const CS = Config.options.colorStart;
+  const CE = Config.options.colorEnd;
+  let i = 0;
+  while(i < text.length) {
+    const ch = text[i];
+    if (ch == CS) {
+      ++i;
+      while(text[i] != CS && i < text.length) {
+        ++i;
+      }
+      ++i;
+    }
+    else if (ch == CE) {
+      ++i;
+      while(text[i] == CS && i < text.length) {
+        ++i;
+      }
+    }
+    else {
+      return text.substring(0, i) + ch.toUpperCase() + text.substring(i + 1);
+    }
+  }
+  return text;
+}
