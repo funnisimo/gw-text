@@ -1,4 +1,5 @@
 import * as Config from './config';
+import * as Utils from './utils';
 export function nextBreak(text, start) {
     const CS = Config.options.colorStart;
     const CE = Config.options.colorEnd;
@@ -78,13 +79,77 @@ export function nextBreak(text, start) {
 export function splice(text, start, len, add = '') {
     return text.substring(0, start) + add + text.substring(start + len);
 }
-// Returns the number of lines, including the newlines already in the text.
-// Puts the output in "to" only if we receive a "to" -- can make it null and just get a line count.
+function advanceChars(text, start, count) {
+    const CS = Config.options.colorStart;
+    const CE = Config.options.colorEnd;
+    let i = start;
+    while (count > 0) {
+        const ch = text[i];
+        if (ch === CS) {
+            ++i;
+            while (text[i] !== CS)
+                ++i;
+            ++i;
+        }
+        else if (ch === CE) {
+            if (text[i + 1] === CE) {
+                --count;
+                ++i;
+            }
+            ++i;
+        }
+        else {
+            --count;
+            ++i;
+        }
+    }
+    return i;
+}
+export function hyphenate(text, width, start, end, wordWidth, spaceLeftOnLine) {
+    if (wordWidth + 1 > (width * 2)) {
+        throw new Error('Cannot hyphenate - word length > 2 * width');
+    }
+    if ((spaceLeftOnLine < 4) || (spaceLeftOnLine + width < wordWidth)) {
+        text = splice(text, start - 1, 1, '\n');
+        spaceLeftOnLine = width;
+    }
+    if (spaceLeftOnLine + width > wordWidth) {
+        // one hyphen...
+        const hyphenAt = Math.min(Math.floor(wordWidth / 2), spaceLeftOnLine - 1);
+        const w = advanceChars(text, start, hyphenAt);
+        text = splice(text, w, 0, '-\n');
+        return [text, end + 2];
+    }
+    if (width >= wordWidth) {
+        return [text, end];
+    }
+    const hyphenAt = Math.min(wordWidth, width - 1);
+    const w = advanceChars(text, start, hyphenAt);
+    text = splice(text, w, 0, '-\n');
+    return [text, end + 2];
+}
 export function wordWrap(text, width, indent = 0) {
     if (!width)
         throw new Error('Need string and width');
+    if (text.length < width)
+        return text;
+    if (Utils.length(text) < width)
+        return text;
+    if (text.indexOf('\n') == -1) {
+        return wrapLine(text, width);
+    }
+    const lines = text.split('\n');
+    const split = lines.map((line, i) => wrapLine(line, width - (i ? indent : 0)));
+    return split.join('\n');
+}
+// Returns the number of lines, including the newlines already in the text.
+// Puts the output in "to" only if we receive a "to" -- can make it null and just get a line count.
+function wrapLine(text, width) {
+    if (text.length < width)
+        return text;
+    if (Utils.length(text) < width)
+        return text;
     let spaceLeftOnLine = width;
-    width = width - indent;
     let printString = text;
     let textLength = printString.length; // do NOT remove color length
     // Now go through and replace spaces with newlines as needed.
@@ -95,7 +160,11 @@ export function wordWrap(text, width, indent = 0) {
         // w indicates the position of the space or newline or null terminator that terminates the word.
         let [w, wordWidth] = nextBreak(printString, i + 1);
         // console.log('- w=%d, width=%d, space=%d', w, wordWidth, spaceLeftOnLine)
-        if (wordWidth == spaceLeftOnLine) {
+        if (wordWidth > width) {
+            ([printString, w] = hyphenate(printString, width, i + 1, w, wordWidth, spaceLeftOnLine));
+            textLength = printString.length;
+        }
+        else if (wordWidth == spaceLeftOnLine) {
             const nl = (w < textLength) ? '\n' : '';
             printString = splice(printString, w, 1, nl); // [i] = '\n';
             spaceLeftOnLine = width;
