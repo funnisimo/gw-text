@@ -517,21 +517,23 @@
             options.defaultBg = opts.bg;
         }
     }
-    const text = {
-        compile,
-        eachChar,
-        addHeler: addHelper,
-        length,
-        padStart,
-        padEnd,
-        center,
-        capitalize,
-        removeColors,
-        wordWrap,
-        configure,
+
+    var index = {
+        __proto__: null,
+        compile: compile,
+        eachChar: eachChar,
+        length: length,
+        padStart: padStart,
+        padEnd: padEnd,
+        center: center,
+        capitalize: capitalize,
+        removeColors: removeColors,
+        wordWrap: wordWrap,
+        configure: configure,
+        addHelper: addHelper
     };
 
-    exports.text = text;
+    exports.text = index;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

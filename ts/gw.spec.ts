@@ -1,7 +1,7 @@
 
-import * as Text from './index';
+import { text as Text } from './gw';
 
-describe('text', () => {
+describe('GW.text', () => {
 
   test('configure', () => {
     expect(Text.configure).toBeDefined();

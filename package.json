@@ -1,9 +1,9 @@
 {
   "name": "gw-text",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "Text formatting and utilities",
-  "browser": "dist/text.js",
-  "main": "dist/text.js",
+  "browser": "dist/gw.js",
+  "main": "dist/index.js",
   "module": "js/index.js",
   "scripts": {
     "compile": "tsc --build tsconfig.json",
