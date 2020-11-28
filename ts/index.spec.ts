@@ -1,12 +1,11 @@
 
-import * as GWText from './index';
+import { text as Text } from './index';
 
-describe('GWText', () => {
+describe('GW.text', () => {
 
   test('configure', () => {
-    expect(GWText.options).toBeDefined();
-    expect(GWText.configure).toBeDefined();
-    expect(GWText.compile).toBeDefined();
-    expect(GWText.eachChar).toBeDefined();
+    expect(Text.configure).toBeDefined();
+    expect(Text.compile).toBeDefined();
+    expect(Text.eachChar).toBeDefined();
   });
 });

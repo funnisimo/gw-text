@@ -4,8 +4,10 @@
 export default {
   input: 'js/index.js',
   output: {
-    file: 'dist/index.js',
+    file: 'dist/text.js',
     format: 'umd',
-    name: 'GWText'
+    name: 'GW',
+    freeze: false,
+    extend: true,
   }
 };

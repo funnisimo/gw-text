@@ -1,7 +1,7 @@
 (function (global, factory) {
     typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
     typeof define === 'function' && define.amd ? define(['exports'], factory) :
-    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.GWText = {}));
+    (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.GW = global.GW || {}));
 }(this, (function (exports) { 'use strict';
 
     var options = {
@@ -517,28 +517,21 @@
             options.defaultBg = opts.bg;
         }
     }
+    const text = {
+        compile,
+        eachChar,
+        addHeler: addHelper,
+        length,
+        padStart,
+        padEnd,
+        center,
+        capitalize,
+        removeColors,
+        wordWrap,
+        configure,
+    };
 
-    exports.addHelper = addHelper;
-    exports.baseValue = baseValue;
-    exports.capitalize = capitalize;
-    exports.center = center;
-    exports.compile = compile;
-    exports.configure = configure;
-    exports.eachChar = eachChar;
-    exports.fieldValue = fieldValue;
-    exports.floatFormat = floatFormat;
-    exports.helperValue = helperValue;
-    exports.helpers = helpers;
-    exports.intFormat = intFormat;
-    exports.length = length;
-    exports.makeVariable = makeVariable;
-    exports.options = options;
-    exports.padEnd = padEnd;
-    exports.padStart = padStart;
-    exports.removeColors = removeColors;
-    exports.stringFormat = stringFormat;
-    exports.textSegment = textSegment;
-    exports.wordWrap = wordWrap;
+    exports.text = text;
 
     Object.defineProperty(exports, '__esModule', { value: true });
 

@@ -1,10 +1,9 @@
-export * from './compile';
-export * from './each';
-export * from './config';
-export * from './utils';
-export { wordWrap } from './lines';
+import { compile } from './compile';
+import { eachChar } from './each';
+import { length, padStart, padEnd, center, capitalize, removeColors } from './utils';
+import { wordWrap } from './lines';
 import * as Config from './config';
-export function configure(opts = {}) {
+function configure(opts = {}) {
     if (opts.helpers) {
         Object.entries(opts.helpers).forEach(([name, fn]) => {
             Config.addHelper(name, fn);
@@ -17,3 +16,16 @@ export function configure(opts = {}) {
         Config.options.defaultBg = opts.bg;
     }
 }
+export const text = {
+    compile,
+    eachChar,
+    addHeler: Config.addHelper,
+    length,
+    padStart,
+    padEnd,
+    center,
+    capitalize,
+    removeColors,
+    wordWrap,
+    configure,
+};
