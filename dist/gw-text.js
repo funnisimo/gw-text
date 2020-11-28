@@ -52,7 +52,7 @@ function compile(template) {
             return textSegment(F);
         return makeVariable(part);
     });
-    return function (args) {
+    return function (args = {}) {
         return sections.map((f) => f(args)).join('');
     };
 }

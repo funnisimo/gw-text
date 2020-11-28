@@ -17,7 +17,7 @@ export function compile(template: string): Template {
     return makeVariable(part);
   });
   
-  return function(args:Args) {
+  return function(args:Args={}) {
     return sections.map( (f) => f(args) ).join('');
   }
 }
