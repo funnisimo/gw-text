@@ -43,6 +43,7 @@ function addHelper(name, fn) {
 
 function compile(template) {
     const F = options.field;
+    console.log('Field = ', F);
     const parts = template.split(F);
     const sections = parts.map((part, i) => {
         if (i % 2 == 0)
@@ -513,6 +514,15 @@ function configure(opts = {}) {
     }
     if (opts.bg) {
         options.defaultBg = opts.bg;
+    }
+    if (opts.colorStart) {
+        options.colorStart = opts.colorStart;
+    }
+    if (opts.colorEnd) {
+        options.colorEnd = opts.colorEnd;
+    }
+    if (opts.field) {
+        options.field = opts.field;
     }
 }
 
