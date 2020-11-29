@@ -125,14 +125,14 @@ function wrapLine(text, width, indent = 0) {
     while (i < printString.length) {
         // wordWidth counts the word width of the next word without color escapes.
         // w indicates the position of the space or newline or null terminator that terminates the word.
-        let [w, wordWidth] = nextBreak(printString, i + 1);
+        let [w, wordWidth] = nextBreak(printString, i + (removeSpace ? 1 : 0));
         let hyphen = false;
         if (printString[w] == '-') {
             w++;
             wordWidth++;
             hyphen = true;
         }
-        console.log('- w=%d, width=%d, space=%d, word=%s', w, wordWidth, spaceLeftOnLine, printString.substring(i, w));
+        // console.log('- w=%d, width=%d, space=%d, word=%s', w, wordWidth, spaceLeftOnLine, printString.substring(i, w));
         if (wordWidth > width) {
             ([printString, w] = hyphenate(printString, width, i + 1, w, wordWidth, spaceLeftOnLine));
         }
@@ -143,7 +143,7 @@ function wrapLine(text, width, indent = 0) {
             w += (1 - remove); // if we change the length we need to advance our pointer
             spaceLeftOnLine = width;
         }
-        else if (wordWidth > spaceLeftOnLine || printString[i] === '\n') {
+        else if (wordWidth > spaceLeftOnLine) {
             const remove = removeSpace ? 1 : 0;
             printString = splice(printString, i, remove, '\n'); // [i] = '\n';
             w += (1 - remove); // if we change the length we need to advance our pointer

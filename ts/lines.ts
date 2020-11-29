@@ -170,7 +170,7 @@ function wrapLine(text:string, width:number, indent:number=0) {
       
       spaceLeftOnLine = width; 
     }
-    else if (wordWidth > spaceLeftOnLine || printString[i] === '\n') {
+    else if (wordWidth > spaceLeftOnLine) {
       const remove = removeSpace ? 1 : 0;
       printString = splice(printString, i, remove, '\n');	// [i] = '\n';
       w += (1 - remove);  // if we change the length we need to advance our pointer
