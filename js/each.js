@@ -40,9 +40,9 @@ export function eachChar(text, fn, fg, bg) {
                 ++i;
             }
             else {
-                const c = colors.pop(); // if you pop too many times colors can get weird
+                const c = colors.pop(); // if you pop too many times colors go away
                 [ctx.fg, ctx.bg] = c || [null, null];
-                colorFn(ctx);
+                // colorFn(ctx);
                 continue;
             }
         }
