@@ -1,4 +1,6 @@
 
+// This is adapted from: https://github.com/ondras/rot.js/blob/master/manual/manual.js
+
 var converter = new showdown.Converter();
 converter.setFlavor('github');
 
@@ -71,7 +73,10 @@ class Example {
 		function show() {
 			for (var i=0;i<arguments.length;i++) {
 				var arg = arguments[i];
-				if (!arg.nodeType) {
+				if (!arg) {
+					arg = $('<div></div>').html(JSON.stringify(arg));
+				}
+				else if (!arg.nodeType) {
 					if (!Array.isArray(arg) && typeof arg == 'object') {
 						if (arg.stack) {
 							arg = arg.stack;
