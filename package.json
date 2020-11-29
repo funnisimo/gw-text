@@ -1,6 +1,6 @@
 {
   "name": "gw-text",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Text formatting and utilities",
   "browser": "dist/gw-text.min.js",
   "main": "dist/gw-text.js",
