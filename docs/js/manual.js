@@ -1,4 +1,6 @@
 
+// This is adapted from: https://github.com/ondras/rot.js/blob/master/manual/manual.js
+
 var converter = new showdown.Converter();
 converter.setFlavor('github');
 
