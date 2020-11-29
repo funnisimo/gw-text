@@ -50,4 +50,4 @@ GW.text.addHelper('eachColor', transformColor);
 GW.text.eachChar( 'ΩpinkΩthe Ωblue|redΩfrog∆ ate ΩgreenΩbugs∆∆', (ch, i, fg, bg) => SHOW(`${ch} [${fg} + ${bg}]`) );
 ```
 
-Notice that the color can be transformed multiple times as the color stack is pushed and popped.  Keep this in mind when you construct your helper to make sure it works appropriately.
+Notice that the color can be transformed only once as the color stack is pushed and popped.  Keep this in mind when you construct your helper to make sure it works appropriately.
