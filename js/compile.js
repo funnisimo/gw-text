@@ -1,7 +1,6 @@
 import * as Config from './config';
 export function compile(template) {
     const F = Config.options.field;
-    console.log('Field = ', F);
     const parts = template.split(F);
     const sections = parts.map((part, i) => {
         if (i % 2 == 0)

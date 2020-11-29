@@ -8,8 +8,6 @@ type Template = (args: Args) => any;
 export function compile(template: string): Template {
   const F = Config.options.field;
 
-  console.log('Field = ', F);
-
   const parts = template.split(F);
   const sections = parts.map( (part, i) => {
     if (i % 2 == 0) return textSegment(part);

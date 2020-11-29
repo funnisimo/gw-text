@@ -43,7 +43,6 @@ function addHelper(name, fn) {
 
 function compile(template) {
     const F = options.field;
-    console.log('Field = ', F);
     const parts = template.split(F);
     const sections = parts.map((part, i) => {
         if (i % 2 == 0)

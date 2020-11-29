@@ -8,7 +8,8 @@
   "scripts": {
     "compile": "tsc --build tsconfig.json",
     "bundle": "rollup -c",
-    "build": "npm run compile && npm run bundle",
+    "copy": "cp dist/gw-text.min.js docs/js",
+    "build": "npm run compile && npm run bundle && npm run copy",
     "serve": "python -m SimpleHTTPServer",
     "test": "jest",
     "test-debug": "node --inspect-brk node_modules/.bin/jest --runInBand"
