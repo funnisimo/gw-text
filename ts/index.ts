@@ -54,4 +54,5 @@ export {
   wordWrap,
   configure,
   addHelper,
+  options
 };

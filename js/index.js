@@ -25,4 +25,4 @@ function configure(opts = {}) {
         options.field = opts.field;
     }
 }
-export { compile, eachChar, length, padStart, padEnd, center, firstChar, capitalize, removeColors, wordWrap, configure, addHelper, };
+export { compile, eachChar, length, padStart, padEnd, center, firstChar, capitalize, removeColors, wordWrap, configure, addHelper, options };

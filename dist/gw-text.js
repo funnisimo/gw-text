@@ -537,6 +537,7 @@ exports.configure = configure;
 exports.eachChar = eachChar;
 exports.firstChar = firstChar;
 exports.length = length;
+exports.options = options;
 exports.padEnd = padEnd;
 exports.padStart = padStart;
 exports.removeColors = removeColors;
