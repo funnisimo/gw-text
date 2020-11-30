@@ -1,5 +1,7 @@
 import * as Config from './config';
 export function eachChar(text, fn, fg, bg) {
+    if (!text || text.length == 0)
+        return;
     const colors = [];
     const colorFn = Config.helpers.eachColor;
     const ctx = {
@@ -46,7 +48,7 @@ export function eachChar(text, fn, fg, bg) {
                 continue;
             }
         }
-        fn(ch, n, ctx.fg, ctx.bg);
+        fn(ch, ctx.fg, ctx.bg, n, i);
         ++n;
     }
 }

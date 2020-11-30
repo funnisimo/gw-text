@@ -4,16 +4,16 @@
 GW.text allows you to wrap text at specified widths.
 
 ```js
-const r = GW.text.wordWrap('This is a long message that would need to be wrapped on many displays.', 20);
+const r = GW.text.wordWrap('This is a long message that will need to be wrapped on many displays.', 20);
 SHOW(r);
 ```
 
 ### Indent
 
-You can provide a third parameter to the word wrap function that is the change in width that the function should use starting in the second line.  This adjustment can be either positive or negative.  Positive numbers lengthen the subsequent lines, negative numbers shorten them.
+You can provide a third parameter to the word wrap function that is the change in width that the function should use starting in the second line.  This adjustment can be either positive or negative.  Positive numbers shorten the subsequent lines, negative numbers lengthen them -- think of is as moving the margin line in (+) or out (-).
 
 ```js
-const r = GW.text.wordWrap('This is a long message that would need to be wrapped on many displays.', 20, 10);
+const r = GW.text.wordWrap('This is a long message that will need to be wrapped on many displays.', 20, -10);
 SHOW(r);
 ```
 

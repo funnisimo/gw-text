@@ -32,6 +32,11 @@ export var options = {
 // }
 export var helpers = {
     eachColor: (() => { }),
+    default: ((name, _, value) => {
+        if (value !== undefined)
+            return `${value}.!!${name}!!`;
+        return `!!${name}!!`;
+    }),
 };
 export function addHelper(name, fn) {
     helpers[name] = fn;

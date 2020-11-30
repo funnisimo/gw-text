@@ -62,3 +62,8 @@ test('removeColors', () => {
   expect(Utils.removeColors('ΩredΩtest∆')).toEqual('test');
   expect(Utils.removeColors('a ΩΩ horseshoe ∆∆!')).toEqual('a ΩΩ horseshoe ∆∆!');
 });
+
+test('firstChar', () => {
+  expect(Utils.firstChar('test')).toEqual('t');
+  expect(Utils.firstChar('ΩredΩtest∆')).toEqual('t');
+});

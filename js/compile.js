@@ -17,24 +17,29 @@ export function textSegment(value) {
     return (() => value);
 }
 export function baseValue(name) {
-    return function (args) { return args[name] || `!!${name}!!`; };
+    return function (args) {
+        const h = Config.helpers[name];
+        if (h)
+            return h(name, args);
+        const v = args[name];
+        if (v !== undefined)
+            return v;
+        return Config.helpers.default(name, args);
+    };
 }
 export function fieldValue(name, source) {
     return function (args) {
         const obj = source(args);
         if (!obj)
-            return `!!null.${name}!!`;
+            return Config.helpers.default(name, args, obj);
         const value = obj[name];
         if (value === undefined)
-            return `!!${'' + obj}.${name}!!`;
+            return Config.helpers.default(name, args, obj);
         return value;
     };
 }
 export function helperValue(name, source) {
-    const helper = Config.helpers[name];
-    if (!helper) {
-        return (() => `Missing Helper:${name}`);
-    }
+    const helper = Config.helpers[name] || Config.helpers.default;
     if (!source) {
         return function (args) {
             return helper(name, args, undefined);

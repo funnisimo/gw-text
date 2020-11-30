@@ -36,6 +36,11 @@ var options = {
 // }
 var helpers = {
     eachColor: (() => { }),
+    default: ((name, _, value) => {
+        if (value !== undefined)
+            return `${value}.!!${name}!!`;
+        return `!!${name}!!`;
+    }),
 };
 function addHelper(name, fn) {
     helpers[name] = fn;
@@ -59,24 +64,29 @@ function textSegment(value) {
     return (() => value);
 }
 function baseValue(name) {
-    return function (args) { return args[name] || `!!${name}!!`; };
+    return function (args) {
+        const h = helpers[name];
+        if (h)
+            return h(name, args);
+        const v = args[name];
+        if (v !== undefined)
+            return v;
+        return helpers.default(name, args);
+    };
 }
 function fieldValue(name, source) {
     return function (args) {
         const obj = source(args);
         if (!obj)
-            return `!!null.${name}!!`;
+            return helpers.default(name, args, obj);
         const value = obj[name];
         if (value === undefined)
-            return `!!${'' + obj}.${name}!!`;
+            return helpers.default(name, args, obj);
         return value;
     };
 }
 function helperValue(name, source) {
-    const helper = helpers[name];
-    if (!helper) {
-        return (() => `Missing Helper:${name}`);
-    }
+    const helper = helpers[name] || helpers.default;
     if (!source) {
         return function (args) {
             return helper(name, args, undefined);
@@ -176,6 +186,8 @@ function makeVariable(pattern) {
 }
 
 function eachChar(text, fn, fg, bg) {
+    if (!text || text.length == 0)
+        return;
     const colors = [];
     const colorFn = helpers.eachColor;
     const ctx = {
@@ -222,12 +234,14 @@ function eachChar(text, fn, fg, bg) {
                 continue;
             }
         }
-        fn(ch, n, ctx.fg, ctx.bg);
+        fn(ch, ctx.fg, ctx.bg, n, i);
         ++n;
     }
 }
 
 function length(text) {
+    if (!text || text.length == 0)
+        return 0;
     let len = 0;
     const CS = options.colorStart;
     const CE = options.colorEnd;
@@ -243,6 +257,57 @@ function length(text) {
         }
     }
     return len;
+}
+function advanceChars(text, start, count) {
+    const CS = options.colorStart;
+    const CE = options.colorEnd;
+    let i = start;
+    while (count > 0) {
+        const ch = text[i];
+        if (ch === CS) {
+            ++i;
+            while (text[i] !== CS)
+                ++i;
+            ++i;
+        }
+        else if (ch === CE) {
+            if (text[i + 1] === CE) {
+                --count;
+                ++i;
+            }
+            ++i;
+        }
+        else {
+            --count;
+            ++i;
+        }
+    }
+    return i;
+}
+function firstChar(text) {
+    const CS = options.colorStart;
+    const CE = options.colorEnd;
+    let i = 0;
+    while (i < text.length) {
+        const ch = text[i];
+        if (ch === CS) {
+            if (text[i + 1] === CS)
+                return CS;
+            ++i;
+            while (text[i] !== CS)
+                ++i;
+            ++i;
+        }
+        else if (ch === CE) {
+            if (text[i + 1] === CE)
+                return CE;
+            ++i;
+        }
+        else {
+            return ch;
+        }
+    }
+    return null;
 }
 function padStart(text, width, pad = ' ') {
     const colorLen = text.length - length(text);
@@ -365,32 +430,6 @@ function nextBreak(text, start) {
 function splice(text, start, len, add = '') {
     return text.substring(0, start) + add + text.substring(start + len);
 }
-function advanceChars(text, start, count) {
-    const CS = options.colorStart;
-    const CE = options.colorEnd;
-    let i = start;
-    while (count > 0) {
-        const ch = text[i];
-        if (ch === CS) {
-            ++i;
-            while (text[i] !== CS)
-                ++i;
-            ++i;
-        }
-        else if (ch === CE) {
-            if (text[i + 1] === CE) {
-                --count;
-                ++i;
-            }
-            ++i;
-        }
-        else {
-            --count;
-            ++i;
-        }
-    }
-    return i;
-}
 function hyphenate(text, width, start, end, wordWidth, spaceLeftOnLine) {
     if (wordWidth + 1 > (width * 2)) {
         throw new Error('Cannot hyphenate - word length > 2 * width');
@@ -436,7 +475,7 @@ function wrapLine(text, width, indent = 0) {
     if (length(text) < width)
         return text;
     let spaceLeftOnLine = width;
-    width = width + indent;
+    width = width - indent;
     let printString = text;
     // Now go through and replace spaces with newlines as needed.
     // console.log('wordWrap - ', text, width, indent);
@@ -510,7 +549,9 @@ exports.center = center;
 exports.compile = compile;
 exports.configure = configure;
 exports.eachChar = eachChar;
+exports.firstChar = firstChar;
 exports.length = length;
+exports.options = options;
 exports.padEnd = padEnd;
 exports.padStart = padStart;
 exports.removeColors = removeColors;

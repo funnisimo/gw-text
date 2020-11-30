@@ -12,4 +12,9 @@ describe('Config', () => {
     expect(Config.helpers.test).toBe(fn);
   });
   
+  test('default helper', () => {
+    expect(Config.helpers.default).toBeFunction();
+    expect(Config.helpers.default('test')).toEqual('!!test!!');
+  });
+  
 });

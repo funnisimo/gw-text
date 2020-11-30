@@ -9,11 +9,13 @@ interface Colors {
 type ColorFunction = (colors:Colors) => void;
 type ColorInfo = [any,any];
 
-type EachFn = (ch:string, i: number, fg:any, bg:any ) => void;
+type EachFn = (ch:string, fg:any, bg:any, i: number, n: number ) => void;
+
 
 export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
-  const colors: ColorInfo[] = [];
+  if (!text || text.length == 0) return;
   
+  const colors: ColorInfo[] = [];
   const colorFn = Config.helpers.eachColor as ColorFunction;
 
   const ctx = {
@@ -63,7 +65,7 @@ export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
         continue;
       }
     }
-    fn(ch, n, ctx.fg, ctx.bg);
+    fn(ch, ctx.fg, ctx.bg, n, i);
     ++n;
   }
 }

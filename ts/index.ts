@@ -2,7 +2,7 @@
 
 import { compile } from './compile';
 import { eachChar } from './each';
-import { length, padStart, padEnd, center, capitalize, removeColors } from './utils';
+import { length, padStart, padEnd, center, capitalize, removeColors, firstChar } from './utils';
 import { wordWrap } from './lines';
 
 import { addHelper, options } from './config';
@@ -48,9 +48,11 @@ export {
   padStart,
   padEnd,
   center,
+  firstChar,
   capitalize,
   removeColors,
   wordWrap,
   configure,
   addHelper,
+  options
 };

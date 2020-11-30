@@ -53,32 +53,6 @@ export function splice(text:string, start:number, len:number, add:string='') {
   return text.substring(0, start) + add + text.substring(start+len);
 }
 
-function advanceChars(text:string, start:number, count:number) {
-  const CS = Config.options.colorStart;
-  const CE = Config.options.colorEnd;
-
-  let i = start;
-  while (count > 0) {
-    const ch = text[i];
-    if (ch === CS) {
-      ++i;
-      while(text[i] !== CS) ++i;
-      ++i;
-    }
-    else if (ch === CE) {
-      if (text[i+1] === CE) {
-        --count;
-        ++i;
-      }
-      ++i;
-    }
-    else {
-      --count;
-      ++i;
-    }
-  }
-  return i;
-}
 
 
 export function hyphenate(text:string, width:number, start:number, end:number, wordWidth:number, spaceLeftOnLine:number) : [string,number]
@@ -95,7 +69,7 @@ export function hyphenate(text:string, width:number, start:number, end:number, w
   if (spaceLeftOnLine + width > wordWidth) {
     // one hyphen...
     const hyphenAt = Math.min(Math.floor(wordWidth/2), spaceLeftOnLine-1);
-    const w = advanceChars(text, start, hyphenAt);
+    const w = Utils.advanceChars(text, start, hyphenAt);
     text = splice(text, w, 0, '-\n');
     
     return [text, end + 2];
@@ -106,7 +80,7 @@ export function hyphenate(text:string, width:number, start:number, end:number, w
   }
 
   const hyphenAt = Math.min(wordWidth, width-1);
-  const w = advanceChars(text, start, hyphenAt);
+  const w = Utils.advanceChars(text, start, hyphenAt);
   text = splice(text, w, 0, '-\n');
 
   return [text, end + 2];
@@ -135,7 +109,7 @@ function wrapLine(text:string, width:number, indent:number=0) {
   if (Utils.length(text) < width) return text;
 
   let spaceLeftOnLine = width;
-  width = width + indent;
+  width = width - indent;
 
   let printString = text;
 
