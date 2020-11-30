@@ -13,8 +13,9 @@ type EachFn = (ch:string, fg:any, bg:any, i: number, n: number ) => void;
 
 
 export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
-  const colors: ColorInfo[] = [];
+  if (!text || text.length == 0) return;
   
+  const colors: ColorInfo[] = [];
   const colorFn = Config.helpers.eachColor as ColorFunction;
 
   const ctx = {

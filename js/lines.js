@@ -90,7 +90,7 @@ function wrapLine(text, width, indent = 0) {
     if (Utils.length(text) < width)
         return text;
     let spaceLeftOnLine = width;
-    width = width + indent;
+    width = width - indent;
     let printString = text;
     // Now go through and replace spaces with newlines as needed.
     // console.log('wordWrap - ', text, width, indent);

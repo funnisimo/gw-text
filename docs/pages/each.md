@@ -39,6 +39,20 @@ GW.text.configure({ colorStart: 'Ω', colorEnd: '∆' });  // reset
 
 Currently the fg/bg separator cannot be changed.
 
+### Default colors
+
+You can supply the default colors for iteration in two places:
+
+* Per Call defaults - You can supply the starting fg and bg values on each call after the handler function
+* Global defaults - In the configure function you can supply these values to set the global defaults:
+  * defaultFg
+  * defaultBg
+  
+```js
+GW.text.eachChar( 'taco Ωblue|redΩfrog∆', (ch, fg, bg) => SHOW(`${ch} [${fg} + ${bg}]`), 'green', 'teal');
+```
+
+
 ### Color Transformations
 
 You can setup a special helper function to transform the colors that are embedded in the the text.  The helper function receives an object that has the fg and bg fields with their current values.  The helper can change these and that value will be used.

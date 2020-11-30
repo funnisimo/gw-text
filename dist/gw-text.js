@@ -36,6 +36,11 @@ var options = {
 // }
 var helpers = {
     eachColor: (() => { }),
+    default: ((name, _, value) => {
+        if (value !== undefined)
+            return `${value}.!!${name}!!`;
+        return `!!${name}!!`;
+    }),
 };
 function addHelper(name, fn) {
     helpers[name] = fn;
@@ -59,24 +64,29 @@ function textSegment(value) {
     return (() => value);
 }
 function baseValue(name) {
-    return function (args) { return args[name] || `!!${name}!!`; };
+    return function (args) {
+        const h = helpers[name];
+        if (h)
+            return h(name, args);
+        const v = args[name];
+        if (v !== undefined)
+            return v;
+        return helpers.default(name, args);
+    };
 }
 function fieldValue(name, source) {
     return function (args) {
         const obj = source(args);
         if (!obj)
-            return `!!null.${name}!!`;
+            return helpers.default(name, args, obj);
         const value = obj[name];
         if (value === undefined)
-            return `!!${'' + obj}.${name}!!`;
+            return helpers.default(name, args, obj);
         return value;
     };
 }
 function helperValue(name, source) {
-    const helper = helpers[name];
-    if (!helper) {
-        return (() => `Missing Helper:${name}`);
-    }
+    const helper = helpers[name] || helpers.default;
     if (!source) {
         return function (args) {
             return helper(name, args, undefined);
@@ -176,6 +186,8 @@ function makeVariable(pattern) {
 }
 
 function eachChar(text, fn, fg, bg) {
+    if (!text || text.length == 0)
+        return;
     const colors = [];
     const colorFn = helpers.eachColor;
     const ctx = {
@@ -228,6 +240,8 @@ function eachChar(text, fn, fg, bg) {
 }
 
 function length(text) {
+    if (!text || text.length == 0)
+        return 0;
     let len = 0;
     const CS = options.colorStart;
     const CE = options.colorEnd;
@@ -461,7 +475,7 @@ function wrapLine(text, width, indent = 0) {
     if (length(text) < width)
         return text;
     let spaceLeftOnLine = width;
-    width = width + indent;
+    width = width - indent;
     let printString = text;
     // Now go through and replace spaces with newlines as needed.
     // console.log('wordWrap - ', text, width, indent);

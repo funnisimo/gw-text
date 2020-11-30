@@ -25,13 +25,15 @@ When accessing object fields, the field has to return a simple type - string, nu
 
 ### Missing Fields
 
-If you compile a template with a missing field, then an error filler is supplied:
+If you compile a template with a missing field, then (by default) an error filler is supplied:
 
 ```js
 const template = GW.text.compile('a §value§ field and an §obj.field§ field.');
 const result = template({});
 SHOW(result);
 ```
+
+You can change this behavior by replacing the 'default' helper function.
 
 ### Formatting Values
 

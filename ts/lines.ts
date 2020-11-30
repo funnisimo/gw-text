@@ -109,7 +109,7 @@ function wrapLine(text:string, width:number, indent:number=0) {
   if (Utils.length(text) < width) return text;
 
   let spaceLeftOnLine = width;
-  width = width + indent;
+  width = width - indent;
 
   let printString = text;
 

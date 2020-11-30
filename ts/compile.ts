@@ -27,25 +27,30 @@ export function textSegment(value:string) {
 
 
 export function baseValue(name:string) {
-  return function(args:Args) { return args[name] || `!!${name}!!`; }
+  return function(args:Args) { 
+    const h = Config.helpers[name];
+    if (h) return h(name, args);
+    
+    const v = args[name];
+    if (v !== undefined) return v;
+    
+    return Config.helpers.default(name, args); 
+  }
 }
 
 
 export function fieldValue(name:string, source: Template) {
   return function(args:Args) {
     const obj = source(args);
-    if (!obj) return `!!null.${name}!!`;
+    if (!obj) return Config.helpers.default(name, args, obj);
     const value = obj[name];
-    if (value === undefined) return `!!${'' + obj}.${name}!!`;
+    if (value === undefined) return Config.helpers.default(name, args, obj);
     return value;
   }
 }
 
 export function helperValue(name:string, source?: Template) {
-  const helper = Config.helpers[name];
-  if (!helper) {
-    return (() => `Missing Helper:${name}`);
-  }
+  const helper = Config.helpers[name] || Config.helpers.default;
   
   if (!source) {
     return function(args:Args) {

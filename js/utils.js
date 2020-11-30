@@ -1,5 +1,7 @@
 import * as Config from './config';
 export function length(text) {
+    if (!text || text.length == 0)
+        return 0;
     let len = 0;
     const CS = Config.options.colorStart;
     const CE = Config.options.colorEnd;

@@ -27,6 +27,9 @@ describe('compile', () => {
 
   test('base value', () => {
     let base = Compile.baseValue('field');
+    
+    expect(Config.helpers.default('field')).toEqual('!!field!!');
+    
     expect(base({})).toEqual('!!field!!');
     expect(base({ field: 'test' })).toEqual('test');
     expect(base({ field: 3 })).toEqual(3);
@@ -37,7 +40,7 @@ describe('compile', () => {
     test('field from object', () => {
       const base = jest.fn().mockImplementation((a) => a);
       let field = Compile.fieldValue('field', base);
-      expect(field({})).toEqual('!![object Object].field!!');
+      expect(field({})).toEqual('[object Object].!!field!!');
       expect(field({ field: 'test' })).toEqual('test');
       expect(field({ field: 3 })).toEqual(3);
       expect(field({ field: { obj: true }})).toEqual({ obj: true });
@@ -46,10 +49,10 @@ describe('compile', () => {
     test('field from types', () => {
       const base = jest.fn().mockImplementation((a) => a.test);
       let field = Compile.fieldValue('field', base);
-      expect(field({ test: 4 })).toEqual('!!4.field!!');
-      expect(field({ test: 'taco' })).toEqual('!!taco.field!!');
-      expect(field({ test: null } )).toEqual('!!null.field!!');
-      expect(field({ test: [1,2,3] })).toEqual('!!1,2,3.field!!');
+      expect(field({ test: 4 })).toEqual('4.!!field!!');
+      expect(field({ test: 'taco' })).toEqual('taco.!!field!!');
+      expect(field({ test: null } )).toEqual('null.!!field!!');
+      expect(field({ test: [1,2,3] })).toEqual('1,2,3.!!field!!');
     });
     
   });
@@ -59,7 +62,7 @@ describe('compile', () => {
     test('missing helper', () => {
       const base = jest.fn().mockReturnValue('value');
       const helper = Compile.helperValue('missing', base);
-      expect(helper({})).toEqual('Missing Helper:missing');
+      expect(helper({})).toEqual('value.!!missing!!');
     });
 
     test('helper', () => {
@@ -182,4 +185,79 @@ describe('compile', () => {
     });
     
   });
+  
+  describe('default helper', () => {
+
+    let original: Function;
+    
+    beforeAll( () => {
+      original = Config.helpers.default;
+    });
+    
+    afterEach(() => {
+      Config.helpers.default = original;
+    });
+    
+    test('custom default', () => {
+      const defaultHelper = jest.fn().mockImplementation( (name, args, value) => {
+        if (name === 'you') {
+          args._current = value || args.actor;
+          return `you:${args._current}`;
+        }
+        if (name === 'the') {
+          args._current = value;
+          return `the:${value}`;
+        }
+        return `${name}:${args._current}`;
+      });
+      Config.addHelper('default', defaultHelper);
+      
+      const fn = Compile.compile('§you§ §ate§ §the item§.');
+      const text = fn({ actor: 'Fred', item: 'taco' });
+      expect(text).toEqual('you:Fred ate:Fred the:taco.');
+      
+      expect(defaultHelper).toHaveBeenCalledTimes(3);
+    });
+    
+    test('helper chain', () => {
+      const defaultHelper = jest.fn().mockImplementation( (name, args, _) => {
+        return `${name}:${args._current}`;
+      });
+      Config.addHelper('default', defaultHelper);
+
+      const youHelper = jest.fn().mockImplementation( (_, args, value) => {
+        args._current = value || args.actor;
+        return `you:${args._current}`;
+      });
+      Config.addHelper('you', youHelper);
+
+      const theHelper = jest.fn().mockImplementation( (_, args, value) => {
+        args._current = value || args.actor;
+        return `the:${args._current}`;
+      });
+      Config.addHelper('the', theHelper);
+      
+      const fn = Compile.compile('§you§ §ate§ §the item§.');
+      const text = fn({ actor: 'Fred', item: 'taco' });
+      expect(text).toEqual('you:Fred ate:Fred the:taco.');
+      
+      expect(defaultHelper).toHaveBeenCalledTimes(1);
+      expect(youHelper).toHaveBeenCalledTimes(1);
+      expect(theHelper).toHaveBeenCalledTimes(1);
+    });
+    
+    test('helper parameters', () => {
+      const verbHelper = jest.fn().mockImplementation( (_, args, __) => {
+        return `verb:${args.verb}`;
+      });
+      Config.addHelper('verb', verbHelper);
+      
+      const fn = Compile.compile('you §verb§ the item.');
+      const text = fn({ verb: 'ate' });
+      expect(text).toEqual('you verb:ate the item.');
+      expect(verbHelper).toHaveBeenCalledTimes(1);
+    });
+    
+  });
+  
 });
