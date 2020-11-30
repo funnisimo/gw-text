@@ -222,7 +222,7 @@ function eachChar(text, fn, fg, bg) {
                 continue;
             }
         }
-        fn(ch, n, ctx.fg, ctx.bg);
+        fn(ch, ctx.fg, ctx.bg, n, i);
         ++n;
     }
 }

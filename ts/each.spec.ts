@@ -11,7 +11,7 @@ describe('each', () => {
     
     beforeEach( () => {
       output = '';
-      eachFn = jest.fn().mockImplementation( (ch, _, fg) => {
+      eachFn = jest.fn().mockImplementation( (ch, fg) => {
         if (fg) { output += `#${fg}#`; }
         output += ch;
       });
@@ -22,10 +22,10 @@ describe('each', () => {
       
       Each.eachChar('test', fn);
       expect(fn).toHaveBeenCalledTimes(4);
-      expect(fn).toHaveBeenCalledWith('t', 0, null, null);
-      expect(fn).toHaveBeenCalledWith('e', 1, null, null);
-      expect(fn).toHaveBeenCalledWith('s', 2, null, null);
-      expect(fn).toHaveBeenCalledWith('t', 3, null, null);
+      expect(fn).toHaveBeenCalledWith('t', null, null, 0, 0);
+      expect(fn).toHaveBeenCalledWith('e', null, null, 1, 1);
+      expect(fn).toHaveBeenCalledWith('s', null, null, 2, 2);
+      expect(fn).toHaveBeenCalledWith('t', null, null, 3, 3);
     });
 
     test('color', () => {

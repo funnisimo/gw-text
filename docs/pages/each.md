@@ -1,10 +1,17 @@
 
 ## eachChar
 
-eachChar iterates through each character in the text string calling the provided function.  It parses and tracks color tags that are embeded in the text as it goes.
+eachChar iterates through each character in the text string calling the provided function.  It parses and tracks color tags that are embedded in the text as it goes.
+
+The callback to eachChar gets these arguments:
+* ch
+* fg
+* bg
+* char index - this is the index of the character in the output text
+* raw index - this is the raw index of the character in the text
 
 ```js
-GW.text.eachChar( 'taco', (ch, i, fg, bg) => SHOW(ch) );
+GW.text.eachChar( 'taco', (ch, fg, bg, i, n) => SHOW(ch) );
 ```
 
 ### Colors
@@ -12,7 +19,7 @@ GW.text.eachChar( 'taco', (ch, i, fg, bg) => SHOW(ch) );
 We can embed color information into the text that will be parsed out by `eachChar`.  Colors can be for fore color, background color, or both.
 
 ```js
-GW.text.eachChar( 'taco Ωblue|redΩfrog∆', (ch, i, fg, bg) => SHOW(`${ch} [${fg} + ${bg}]`) );
+GW.text.eachChar( 'taco Ωblue|redΩfrog∆', (ch, fg, bg) => SHOW(`${ch} [${fg} + ${bg}]`) );
 ```
 
 Colors are marked by a few special characters.  By default they are:
@@ -26,7 +33,7 @@ The color start and end characters can be changed via configuration.
 
 ```js
 GW.text.configure({ colorStart: '#', colorEnd: '@' });
-GW.text.eachChar( '#blue|red#frog@', (ch, i, fg, bg) => SHOW(`${ch} [${fg} + ${bg}]`) );
+GW.text.eachChar( '#blue|red#frog@', (ch, fg, bg) => SHOW(`${ch} [${fg} + ${bg}]`) );
 GW.text.configure({ colorStart: 'Ω', colorEnd: '∆' });  // reset
 ```
 
@@ -47,7 +54,7 @@ function transformColor(ctx) {
 }
 GW.text.addHelper('eachColor', transformColor);
 
-GW.text.eachChar( 'ΩpinkΩthe Ωblue|redΩfrog∆ ate ΩgreenΩbugs∆∆', (ch, i, fg, bg) => SHOW(`${ch} [${fg} + ${bg}]`) );
+GW.text.eachChar( 'ΩpinkΩthe Ωblue|redΩfrog∆ ate ΩgreenΩbugs∆∆', (ch, fg, bg) => SHOW(`${ch} [${fg} + ${bg}]`) );
 ```
 
 Notice that the color can be transformed only once as the color stack is pushed and popped.  Keep this in mind when you construct your helper to make sure it works appropriately.
