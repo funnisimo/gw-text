@@ -45,32 +45,6 @@ export function nextBreak(text, start) {
 export function splice(text, start, len, add = '') {
     return text.substring(0, start) + add + text.substring(start + len);
 }
-function advanceChars(text, start, count) {
-    const CS = Config.options.colorStart;
-    const CE = Config.options.colorEnd;
-    let i = start;
-    while (count > 0) {
-        const ch = text[i];
-        if (ch === CS) {
-            ++i;
-            while (text[i] !== CS)
-                ++i;
-            ++i;
-        }
-        else if (ch === CE) {
-            if (text[i + 1] === CE) {
-                --count;
-                ++i;
-            }
-            ++i;
-        }
-        else {
-            --count;
-            ++i;
-        }
-    }
-    return i;
-}
 export function hyphenate(text, width, start, end, wordWidth, spaceLeftOnLine) {
     if (wordWidth + 1 > (width * 2)) {
         throw new Error('Cannot hyphenate - word length > 2 * width');
@@ -82,7 +56,7 @@ export function hyphenate(text, width, start, end, wordWidth, spaceLeftOnLine) {
     if (spaceLeftOnLine + width > wordWidth) {
         // one hyphen...
         const hyphenAt = Math.min(Math.floor(wordWidth / 2), spaceLeftOnLine - 1);
-        const w = advanceChars(text, start, hyphenAt);
+        const w = Utils.advanceChars(text, start, hyphenAt);
         text = splice(text, w, 0, '-\n');
         return [text, end + 2];
     }
@@ -90,7 +64,7 @@ export function hyphenate(text, width, start, end, wordWidth, spaceLeftOnLine) {
         return [text, end];
     }
     const hyphenAt = Math.min(wordWidth, width - 1);
-    const w = advanceChars(text, start, hyphenAt);
+    const w = Utils.advanceChars(text, start, hyphenAt);
     text = splice(text, w, 0, '-\n');
     return [text, end + 2];
 }

@@ -244,6 +244,57 @@ function length(text) {
     }
     return len;
 }
+function advanceChars(text, start, count) {
+    const CS = options.colorStart;
+    const CE = options.colorEnd;
+    let i = start;
+    while (count > 0) {
+        const ch = text[i];
+        if (ch === CS) {
+            ++i;
+            while (text[i] !== CS)
+                ++i;
+            ++i;
+        }
+        else if (ch === CE) {
+            if (text[i + 1] === CE) {
+                --count;
+                ++i;
+            }
+            ++i;
+        }
+        else {
+            --count;
+            ++i;
+        }
+    }
+    return i;
+}
+function firstChar(text) {
+    const CS = options.colorStart;
+    const CE = options.colorEnd;
+    let i = 0;
+    while (i < text.length) {
+        const ch = text[i];
+        if (ch === CS) {
+            if (text[i + 1] === CS)
+                return CS;
+            ++i;
+            while (text[i] !== CS)
+                ++i;
+            ++i;
+        }
+        else if (ch === CE) {
+            if (text[i + 1] === CE)
+                return CE;
+            ++i;
+        }
+        else {
+            return ch;
+        }
+    }
+    return null;
+}
 function padStart(text, width, pad = ' ') {
     const colorLen = text.length - length(text);
     return text.padStart(width + colorLen, pad);
@@ -365,32 +416,6 @@ function nextBreak(text, start) {
 function splice(text, start, len, add = '') {
     return text.substring(0, start) + add + text.substring(start + len);
 }
-function advanceChars(text, start, count) {
-    const CS = options.colorStart;
-    const CE = options.colorEnd;
-    let i = start;
-    while (count > 0) {
-        const ch = text[i];
-        if (ch === CS) {
-            ++i;
-            while (text[i] !== CS)
-                ++i;
-            ++i;
-        }
-        else if (ch === CE) {
-            if (text[i + 1] === CE) {
-                --count;
-                ++i;
-            }
-            ++i;
-        }
-        else {
-            --count;
-            ++i;
-        }
-    }
-    return i;
-}
 function hyphenate(text, width, start, end, wordWidth, spaceLeftOnLine) {
     if (wordWidth + 1 > (width * 2)) {
         throw new Error('Cannot hyphenate - word length > 2 * width');
@@ -510,6 +535,7 @@ exports.center = center;
 exports.compile = compile;
 exports.configure = configure;
 exports.eachChar = eachChar;
+exports.firstChar = firstChar;
 exports.length = length;
 exports.padEnd = padEnd;
 exports.padStart = padStart;

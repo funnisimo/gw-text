@@ -18,6 +18,57 @@ export function length(text) {
     }
     return len;
 }
+export function advanceChars(text, start, count) {
+    const CS = Config.options.colorStart;
+    const CE = Config.options.colorEnd;
+    let i = start;
+    while (count > 0) {
+        const ch = text[i];
+        if (ch === CS) {
+            ++i;
+            while (text[i] !== CS)
+                ++i;
+            ++i;
+        }
+        else if (ch === CE) {
+            if (text[i + 1] === CE) {
+                --count;
+                ++i;
+            }
+            ++i;
+        }
+        else {
+            --count;
+            ++i;
+        }
+    }
+    return i;
+}
+export function firstChar(text) {
+    const CS = Config.options.colorStart;
+    const CE = Config.options.colorEnd;
+    let i = 0;
+    while (i < text.length) {
+        const ch = text[i];
+        if (ch === CS) {
+            if (text[i + 1] === CS)
+                return CS;
+            ++i;
+            while (text[i] !== CS)
+                ++i;
+            ++i;
+        }
+        else if (ch === CE) {
+            if (text[i + 1] === CE)
+                return CE;
+            ++i;
+        }
+        else {
+            return ch;
+        }
+    }
+    return null;
+}
 export function padStart(text, width, pad = ' ') {
     const colorLen = text.length - length(text);
     return text.padStart(width + colorLen, pad);
