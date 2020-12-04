@@ -196,7 +196,7 @@ function eachChar(text, fn, fg, bg) {
     };
     const CS = options.colorStart;
     const CE = options.colorEnd;
-    colorFn({ fg, bg });
+    colorFn(ctx);
     let n = 0;
     for (let i = 0; i < text.length; ++i) {
         const ch = text[i];

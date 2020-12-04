@@ -26,7 +26,7 @@ export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
   const CS = Config.options.colorStart;
   const CE = Config.options.colorEnd;
 
-  colorFn({ fg, bg });
+  colorFn(ctx);
   
   let n = 0;
   for(let i = 0; i < text.length; ++i) {

@@ -10,7 +10,7 @@ export function eachChar(text, fn, fg, bg) {
     };
     const CS = Config.options.colorStart;
     const CE = Config.options.colorEnd;
-    colorFn({ fg, bg });
+    colorFn(ctx);
     let n = 0;
     for (let i = 0; i < text.length; ++i) {
         const ch = text[i];
