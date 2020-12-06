@@ -13,6 +13,7 @@ type EachFn = (ch:string, fg:any, bg:any, i: number, n: number ) => void;
 
 
 export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
+  text = '' + text; // force string
   if (!text || text.length == 0) return;
   
   const colors: ColorInfo[] = [];

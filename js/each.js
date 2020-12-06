@@ -1,5 +1,6 @@
 import * as Config from './config';
 export function eachChar(text, fn, fg, bg) {
+    text = '' + text; // force string
     if (!text || text.length == 0)
         return;
     const colors = [];
