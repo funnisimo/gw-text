@@ -13,6 +13,7 @@ type EachFn = (ch:string, fg:any, bg:any, i: number, n: number ) => void;
 
 
 export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
+  text = '' + text; // force string
   if (!text || text.length == 0) return;
   
   const colors: ColorInfo[] = [];
@@ -26,7 +27,7 @@ export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
   const CS = Config.options.colorStart;
   const CE = Config.options.colorEnd;
 
-  colorFn({ fg, bg });
+  colorFn(ctx);
   
   let n = 0;
   for(let i = 0; i < text.length; ++i) {
@@ -48,7 +49,9 @@ export function eachChar(text: string, fn: EachFn, fg?:any, bg?:any) {
       else {
         colors.push([ctx.fg, ctx.bg]);
         const color = text.substring(i+1, j);
-        ([ctx.fg, ctx.bg] = color.split('|'));
+        const newColors = color.split('|');
+        ctx.fg = newColors[0] || ctx.fg;
+        ctx.bg = newColors[1] || ctx.bg;
         colorFn(ctx); 
         i = j;
         continue;

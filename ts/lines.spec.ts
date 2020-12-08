@@ -44,6 +44,14 @@ describe('wordWrap', () => {
     
   });
 
+  test('double wrap', () => {
+    const raw = 'ΩyellowΩWelcome to Town!∆\nΩdark_purpleΩVisit our shops to equip yourself for a journey into the ΩgreenΩDungeons of Moria∆.  Once you are prepared, enter the dungeon and seek the Ωdark_redΩ#Balrog∆.  Destroy him to free us all!∆\nΩwhiteΩPress <?> for help.';
+    const wrapped = Lines.wordWrap(raw, 80);
+
+    expect(wrapped).not.toEqual(raw);
+    expect(Lines.wordWrap(wrapped, 80)).toEqual(wrapped);
+  });
+
   test('basic', () => {
     expect(Lines.wordWrap('test', 10)).toEqual('test');
     expect(Lines.wordWrap('test test test', 10)).toEqual('test test\ntest');
