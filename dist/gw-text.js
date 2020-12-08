@@ -186,6 +186,7 @@ function makeVariable(pattern) {
 }
 
 function eachChar(text, fn, fg, bg) {
+    text = '' + text; // force string
     if (!text || text.length == 0)
         return;
     const colors = [];
@@ -196,7 +197,7 @@ function eachChar(text, fn, fg, bg) {
     };
     const CS = options.colorStart;
     const CE = options.colorEnd;
-    colorFn({ fg, bg });
+    colorFn(ctx);
     let n = 0;
     for (let i = 0; i < text.length; ++i) {
         const ch = text[i];
@@ -217,7 +218,9 @@ function eachChar(text, fn, fg, bg) {
             else {
                 colors.push([ctx.fg, ctx.bg]);
                 const color = text.substring(i + 1, j);
-                ([ctx.fg, ctx.bg] = color.split('|'));
+                const newColors = color.split('|');
+                ctx.fg = newColors[0] || ctx.fg;
+                ctx.bg = newColors[1] || ctx.bg;
                 colorFn(ctx);
                 i = j;
                 continue;

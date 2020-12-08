@@ -1,6 +1,6 @@
 {
   "name": "gw-text",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "description": "Color embedded text templating, formatting, and utilities",
   "browser": "dist/gw-text.min.js",
   "main": "dist/gw-text.js",
