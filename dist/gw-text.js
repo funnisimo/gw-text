@@ -218,7 +218,9 @@ function eachChar(text, fn, fg, bg) {
             else {
                 colors.push([ctx.fg, ctx.bg]);
                 const color = text.substring(i + 1, j);
-                ([ctx.fg, ctx.bg] = color.split('|'));
+                const newColors = color.split('|');
+                ctx.fg = newColors[0] || ctx.fg;
+                ctx.bg = newColors[1] || ctx.bg;
                 colorFn(ctx);
                 i = j;
                 continue;
